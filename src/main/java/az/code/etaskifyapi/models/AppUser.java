@@ -1,23 +1,23 @@
 package az.code.etaskifyapi.models;
 
 import lombok.*;
+
 import javax.persistence.*;
 
 @Entity
 @Builder(toBuilder = true)
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "roles")
-public class Role {
+@NoArgsConstructor
+@Table(name = "app_users")
+public class AppUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column
-    private String name;
-    @Column
-    private String description;
+    private String email;
+    private String password;
+    private String role;
 
 }
