@@ -1,4 +1,4 @@
-package az.code.etaskifyapi.config;
+package az.code.etaskifyapi.security;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletResponse;

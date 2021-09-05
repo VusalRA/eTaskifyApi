@@ -1,4 +1,4 @@
-package az.code.etaskifyapi.config;
+package az.code.etaskifyapi.security;
 
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
