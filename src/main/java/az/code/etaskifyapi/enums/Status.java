@@ -4,5 +4,6 @@ public enum Status {
     BACKLOG,
     TODO,
     IN_PROGRESS,
-    DONE
+    DONE,
+    EXPIRED
 }

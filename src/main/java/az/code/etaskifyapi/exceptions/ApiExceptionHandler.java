@@ -83,6 +83,21 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                 errorMessage, new HttpHeaders(), errorMessage.getStatus());
     }
 
+    @ExceptionHandler(value = {IncorrectNameAndSurnameException.class})
+    public ResponseEntity<Object> handleNameAndSurname(IncorrectNameAndSurnameException ex, WebRequest request) {
+        ErrorMessage errorMessage = new ErrorMessage(HttpStatus.NOT_ACCEPTABLE,
+                ex.getLocalizedMessage(), "Incorrect name or surname, please change and try again");
+        return new ResponseEntity<>(
+                errorMessage, new HttpHeaders(), errorMessage.getStatus());
+    }
+
+    @ExceptionHandler(value = {DeadlineException.class})
+    public ResponseEntity<Object> handleDeadline(DeadlineException ex, WebRequest request) {
+        ErrorMessage errorMessage = new ErrorMessage(HttpStatus.NOT_ACCEPTABLE,
+                ex.getLocalizedMessage(), "You cannot enter the wrong date type or previous date");
+        return new ResponseEntity<>(
+                errorMessage, new HttpHeaders(), errorMessage.getStatus());
+    }
 
     @ExceptionHandler(value = {NullPointerException.class})
     public ResponseEntity<Object> handleNullPointerException(NullPointerException ex, WebRequest request) {
