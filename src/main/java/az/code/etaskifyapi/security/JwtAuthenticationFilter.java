@@ -1,7 +1,11 @@
 package az.code.etaskifyapi.security;
 
+import az.code.etaskifyapi.exceptions.BearerStringException;
+import az.code.etaskifyapi.exceptions.ErrorFethcingUsernameException;
+import az.code.etaskifyapi.exceptions.TokenExpiredException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.SignatureException;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -12,6 +16,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.annotation.Resource;
+import javax.security.sasl.AuthenticationException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -42,14 +47,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             try {
                 username = jwtTokenUtil.getUsernameFromToken(authToken);
             } catch (IllegalArgumentException e) {
-                logger.error("An error occurred while fetching Username from Token", e);
+                throw new ErrorFethcingUsernameException();
             } catch (ExpiredJwtException e) {
-                logger.warn("The token has expired", e);
+                throw new TokenExpiredException();
             } catch (SignatureException e) {
-                logger.error("Authentication Failed. Username or Password not valid.");
+                throw new AuthenticationException();
             }
         } else {
-            logger.warn("Couldn't find bearer string, header will be ignored");
+            logger.info("Couldn't find bearer string, header will be ignored");
         }
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 

@@ -2,9 +2,18 @@ package az.code.etaskifyapi.models;
 
 import az.code.etaskifyapi.enums.Status;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -22,7 +31,11 @@ public class Task {
     private Long id;
     private String title;
     private String description;
-    //    private String deadline;
+
+//    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+//    @JsonSerialize(using = LocalDateTimeDeserializer.class)
+//    @JsonFormat(pattern = "MM/yyyy")
+//    private LocalDateTime deadline;
     @Enumerated(EnumType.STRING)
     private Status status;
 
@@ -31,8 +44,8 @@ public class Task {
     @JoinColumn(name = "appUser_id")
     private AppUser appUsers;
 
-//    @JsonIgnore
-//    @ManyToMany
-//    List<AppUser> appUsers;
+    @JsonIgnore
+    @ManyToMany(cascade = CascadeType.ALL)
+    List<AppUser> assigned = new ArrayList<>();
 
 }

@@ -3,6 +3,6 @@ package az.code.etaskifyapi.enums;
 public enum Status {
     BACKLOG,
     TODO,
-    DOING,
+    IN_PROGRESS,
     DONE
 }
