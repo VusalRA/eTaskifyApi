@@ -4,6 +4,7 @@ import az.code.etaskifyapi.dto.AssignDto;
 import az.code.etaskifyapi.dto.StatusDto;
 import az.code.etaskifyapi.dto.TaskDto;
 import az.code.etaskifyapi.enums.Status;
+import az.code.etaskifyapi.exceptions.DeadlineException;
 import az.code.etaskifyapi.models.AppUser;
 import az.code.etaskifyapi.models.Task;
 import az.code.etaskifyapi.models.User;
@@ -22,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class TaskImpl implements TaskService {
+public class TaskServiceImpl implements TaskService {
 
     private TaskRepo taskRepo;
     private UserRepo userRepo;
@@ -32,7 +33,7 @@ public class TaskImpl implements TaskService {
     @Value("${message}")
     private String message;
 
-    public TaskImpl(TaskRepo taskRepo, UserRepo userRepo, AppUserRepo appUserRepo, EmailService emailService) {
+    public TaskServiceImpl(TaskRepo taskRepo, UserRepo userRepo, AppUserRepo appUserRepo, EmailService emailService) {
         this.taskRepo = taskRepo;
         this.userRepo = userRepo;
         this.appUserRepo = appUserRepo;
@@ -42,7 +43,16 @@ public class TaskImpl implements TaskService {
     @Override
     public Task save(TaskDto taskDto, AppUser appUser) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        LocalDateTime dateTime = LocalDateTime.parse(taskDto.getDeadline(), formatter);
+        LocalDateTime dateTime = null;
+        try {
+            dateTime = LocalDateTime.parse(taskDto.getDeadline(), formatter);
+            if (LocalDateTime.now().isAfter(dateTime)) {
+                throw new DeadlineException();
+            }
+        } catch (Exception e) {
+            throw new DeadlineException();
+        }
+
         return taskRepo.save(Task.builder().status(Status.BACKLOG).title(taskDto.getTitle())
                 .description(taskDto.getDescription()).deadline(dateTime).appUsers(appUser).build());
     }
