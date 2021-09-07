@@ -24,7 +24,6 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 
     public AuthToken getAuthToken(LoginUser loginUser) {
         loginValidator.checkEmailAndPassword(loginUser.getEmail(), loginUser.getPassword());
-
         final Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginUser.getEmail(),

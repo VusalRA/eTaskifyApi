@@ -12,11 +12,11 @@ import az.code.etaskifyapi.repositories.AppUserRepo;
 import az.code.etaskifyapi.repositories.OrganizationRepo;
 import az.code.etaskifyapi.repositories.TaskRepo;
 import az.code.etaskifyapi.repositories.UserRepo;
+import az.code.etaskifyapi.services.interfaces.ETaskifyService;
 import az.code.etaskifyapi.util.LoginValidator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -28,25 +28,23 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.*;
 
-@Service(value = "appUserService")
-public class AppUserServiceImpl implements AppUserService, UserDetailsService {
+@Service(value = "eTaskifyService")
+public class ETaskifyServiceImpl implements ETaskifyService, UserDetailsService {
 
     private AppUserRepo appUserRepo;
     private OrganizationRepo organizationRepo;
     private UserRepo userRepo;
     private TaskRepo taskRepo;
-
-    @Autowired
     private LoginValidator loginValidator;
-
-    @Autowired
     private BCryptPasswordEncoder bcryptEncoder;
 
-    public AppUserServiceImpl(AppUserRepo appUserRepo, OrganizationRepo organizationRepo, UserRepo userRepo, TaskRepo taskRepo) {
+    public ETaskifyServiceImpl(AppUserRepo appUserRepo, OrganizationRepo organizationRepo, UserRepo userRepo, TaskRepo taskRepo, LoginValidator loginValidator, BCryptPasswordEncoder bcryptEncoder) {
         this.appUserRepo = appUserRepo;
         this.organizationRepo = organizationRepo;
         this.userRepo = userRepo;
         this.taskRepo = taskRepo;
+        this.loginValidator = loginValidator;
+        this.bcryptEncoder = bcryptEncoder;
     }
 
     @Override
@@ -76,12 +74,6 @@ public class AppUserServiceImpl implements AppUserService, UserDetailsService {
     }
 
     @Override
-    public Task addTask(TaskDto taskDto, AppUser appUser) {
-        Task task = Task.builder().status(Status.BACKLOG).title(taskDto.getTitle()).description(taskDto.getDescription()).appUsers(appUser).build();
-        return taskRepo.save(task);
-    }
-
-    @Override
     public List<AppUser> appUsers(AppUser appUser) {
         User user = userRepo.findByAppUser(appUser);
         List<User> users = userRepo.findByAppUserOrganization_id(user.getAppUserOrganization_id());
@@ -91,31 +83,6 @@ public class AppUserServiceImpl implements AppUserService, UserDetailsService {
             appUsers.add(userss);
         }
         return appUsers;
-    }
-
-    @Override
-    public Task changeStatus(Long id, StatusDto statusDto) {
-        Task task = taskRepo.findById(id).get();
-        task.setStatus(statusDto.getStatus());
-        return taskRepo.save(task);
-    }
-
-    @Override
-    public List<Task> getTasks(AppUser appUser) {
-        List<Task> tasks = new ArrayList<>();
-        if (appUser.getRole().equals("user")) {
-            User user = userRepo.findByAppUser(appUser);
-            tasks = getTasksForUser(user.getAppUserOrganization_id(), tasks);
-        } else {
-            tasks = getTasksForUser(appUser.getId(), tasks);
-        }
-        return tasks;
-    }
-
-    public List<Task> getTasksForUser(Long id, List<Task> tasks) {
-        List<User> users = userRepo.findByAppUserOrganization_id(id);
-        tasks.addAll(taskRepo.findTaskByAppUsers(appUserRepo.findById(users.get(0).getAppUserOrganization_id()).get()));
-        return tasks;
     }
 
     @Override
