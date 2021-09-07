@@ -24,13 +24,12 @@ public class ETaskifyController {
 
     private AuthenticateService authenticateService;
     private ETaskifyService eTaskifyService;
-
-    @Autowired
     private RegistrationValidator registrationValidator;
 
-    public ETaskifyController(AuthenticateService authenticateService, ETaskifyService eTaskifyService) {
+    public ETaskifyController(AuthenticateService authenticateService, ETaskifyService eTaskifyService, RegistrationValidator registrationValidator) {
         this.authenticateService = authenticateService;
         this.eTaskifyService = eTaskifyService;
+        this.registrationValidator = registrationValidator;
     }
 
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
