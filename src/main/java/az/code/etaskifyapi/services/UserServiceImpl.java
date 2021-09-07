@@ -33,5 +33,4 @@ public class UserServiceImpl implements UserService {
         return userRepo.findByAppUser(appUserRepo.findByEmail(email).orElseThrow(ErrorFethcingUsernameException::new));
     }
 
-
 }

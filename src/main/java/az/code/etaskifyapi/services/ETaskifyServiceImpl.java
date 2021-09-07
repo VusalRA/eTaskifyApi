@@ -1,12 +1,9 @@
 package az.code.etaskifyapi.services;
 
-import az.code.etaskifyapi.dto.StatusDto;
-import az.code.etaskifyapi.dto.TaskDto;
-import az.code.etaskifyapi.enums.Status;
+import az.code.etaskifyapi.dto.UserDto;
 import az.code.etaskifyapi.exceptions.EmailAlreadyTakenException;
 import az.code.etaskifyapi.models.AppUser;
 import az.code.etaskifyapi.models.Organization;
-import az.code.etaskifyapi.models.Task;
 import az.code.etaskifyapi.models.User;
 import az.code.etaskifyapi.repositories.AppUserRepo;
 import az.code.etaskifyapi.repositories.OrganizationRepo;
@@ -59,7 +56,11 @@ public class ETaskifyServiceImpl implements ETaskifyService, UserDetailsService 
     }
 
     @Override
-    public User addUser(User user) {
+    public User addUser(UserDto userDto,AppUser userFromToken) {
+        User user = User.builder().name(userDto.getName()).surname(userDto.getSurname()).appUserOrganization_id(userFromToken.getId()).build();
+        AppUser appUser = AppUser.builder().role("user").email(userDto.getEmail()).password(userDto.getPassword()).build();
+        AppUser addAppUser = addAppUser(appUser);
+        user.setAppUser(addAppUser);
         return userRepo.save(user);
     }
 

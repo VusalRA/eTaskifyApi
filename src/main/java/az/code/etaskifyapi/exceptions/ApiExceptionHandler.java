@@ -83,6 +83,14 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                 errorMessage, new HttpHeaders(), errorMessage.getStatus());
     }
 
+    @ExceptionHandler(value = {IncorrectNameAndSurnameException.class})
+    public ResponseEntity<Object> handleNameAndSurname(IncorrectNameAndSurnameException ex, WebRequest request) {
+        ErrorMessage errorMessage = new ErrorMessage(HttpStatus.NOT_ACCEPTABLE,
+                ex.getLocalizedMessage(), "Incorrect name or surname, please change and try again");
+        return new ResponseEntity<>(
+                errorMessage, new HttpHeaders(), errorMessage.getStatus());
+    }
+
 
     @ExceptionHandler(value = {NullPointerException.class})
     public ResponseEntity<Object> handleNullPointerException(NullPointerException ex, WebRequest request) {
