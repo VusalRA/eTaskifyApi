@@ -3,6 +3,7 @@ package az.code.etaskifyapi.models;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Builder(toBuilder = true)
@@ -19,5 +20,8 @@ public class AppUser {
     private String email;
     private String password;
     private String role;
+
+    @OneToMany(mappedBy = "appUsers")
+    private List<Task> tasks;
 
 }

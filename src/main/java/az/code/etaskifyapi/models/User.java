@@ -17,4 +17,11 @@ public class User {
     private Long id;
     private String name;
     private String surname;
+
+    private Long appUserOrganization_id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "appUser_id")
+    private AppUser appUser;
+
 }
