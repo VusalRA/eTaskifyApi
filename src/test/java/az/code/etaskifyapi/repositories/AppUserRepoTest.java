@@ -3,6 +3,9 @@ package az.code.etaskifyapi.repositories;
 import az.code.etaskifyapi.models.AppUser;
 import az.code.etaskifyapi.models.Task;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
@@ -28,6 +31,5 @@ class AppUserRepoTest {
         AppUser expected = underTest.findByName(email);
         //Then
         assertThat(result).isEqualTo(expected);
-
     }
 }
